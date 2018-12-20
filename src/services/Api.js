@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const AxiosInstance = axios.create({
-  baseURL: `https://next.json-generator.com/api/json/get/`,
+  baseURL: `https://next.json-generator.com`,
   withCredentials: false,
   headers: {
     Accept: 'application/json',
