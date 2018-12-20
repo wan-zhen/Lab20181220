@@ -1,12 +1,19 @@
 <template>
   <div class="game-grid">
-    <v-touch v-on:swipeleft="changeSlide(index+1)" v-on:swiperight="changeSlide(index-1)">
+    <v-touch
+      v-on:swipeleft="changeSlide(index + 1)"
+      v-on:swiperight="changeSlide(index - 1)"
+    >
       <Spin v-if="!gameList.length"></Spin>
       <Carousel v-model="index" v-else :dots="'outside'" :arrow="'never'">
-        <CarouselItem class="carouse-item" v-for="(list,i) in gameList" :key="i">
+        <CarouselItem
+          class="carouse-item"
+          v-for="(list, i) in gameList"
+          :key="i"
+        >
           <Row>
             <game-box
-              v-for="(game,i) in list"
+              v-for="(game, i) in list"
               :key="i"
               :name="game.name"
               :isFavorite="game.isFavorite"
@@ -21,6 +28,7 @@
 
 <script>
 import GameBox from '@/components/GameBox.vue';
+import Api from '@/services/Api.js';
 export default {
   name: 'GameGrid',
   props: ['type'],
@@ -44,8 +52,8 @@ export default {
     if (this.type === 'hot') {
       url = '4JUPPpc1L';
     }
-    this.axios
-      .get('https://next.json-generator.com/api/json/get/' + url)
+    Api()
+      .get(url)
       .then(response => {
         const data = response.ReturnObject;
 
