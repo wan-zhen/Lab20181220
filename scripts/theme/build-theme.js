@@ -1,39 +1,37 @@
-var fs = require('fs-extra')
-var request = require('request')
+const fs = require('fs-extra')
+const path = require('path');
+const request = require('request')
+const { spawn } = require('child_process');
 
-/*
-    default theme source : https://next.json-generator.com/api/json/get/4kJ9EIlCr
-    test theme source : https://next.json-generator.com/api/json/get/Vk_GCJXe8
+const args = Array.apply(null, process.argv);
+console.log('args: ', args);
+console.log('lengths: ', args.length);
 
-    ex.1
-    >> npm run theme default
-
-    ex.2
-    >> npm run theme https://next.json-generator.com/api/json/get/Vk_GCJXe8
-*/
-
-const DEFAULT_THEME_SORUCE = 'https://next.json-generator.com/api/json/get/4kJ9EIlCr';
-const themeHttpSource = (process.argv[2] === 'default') ? DEFAULT_THEME_SORUCE : process.argv[2]
-
-request.get(themeHttpSource, (error, callback, res) => {
-
-    if (error) {
-        console.log(`Build Fail : source error ! ${themeHttpSource}`);
-        return;
-    }
-
-    const themeColor = JSON.parse(res).themeColor;
-    if (!themeColor) {
-        console.log(`Build Fail : themeColor undefind !`);
-        return;
-    }
-
-    fs.writeFile('src/style/theme/_variables.less', BuildThemeFail(themeColor), 'utf8')
-        .catch(() => console.log('Build Fail : write file fail !'))
-        .then(() => console.log(`Build Success !!!`));
-
-})
-
-function BuildThemeFail(themeColor){
-    return '@import \'~iview/src/styles/custom.less\';' + themeColor;  
+let theme = 'staging';
+if (args.length > 2) {
+    theme = args[2];
 }
+
+const envFilePath = path.join(
+    process.cwd(),
+    `.env.${theme}`);
+
+console.log('envFilePath: ', envFilePath);
+
+// return spawn('vue-cli-service', ['build', '--mode', theme], {
+//     stdio: 'inherit'
+// });
+
+let configURI = `https://raw.githubusercontent.com/l7960261/ENVLab20181220/master/.env.${theme}`
+
+return request({
+    method: 'GET',
+    uri: configURI
+}, (error, response, body) => {
+    // console.log(body);
+
+    return fs.writeFile(envFilePath, body)
+        .then(() => spawn('vue-cli-service', ['build', '--mode', theme], {
+            stdio: 'inherit'
+        }));
+});
