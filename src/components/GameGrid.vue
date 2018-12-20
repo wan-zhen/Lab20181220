@@ -28,7 +28,7 @@
 
 <script>
 import GameBox from '@/components/GameBox.vue';
-import Api from '@/services/Api.js';
+import BannerService from '@/services/BannerService.js';
 export default {
   name: 'GameGrid',
   props: ['type'],
@@ -48,24 +48,23 @@ export default {
     }
   },
   mounted: function() {
-    let url = 'NynTtqEAr';
+    let banner = BannerService.getNews;
     if (this.type === 'hot') {
-      url = '4JUPPpc1L';
+      banner = BannerService.getHot;
     }
-    Api()
-      .get(url)
-      .then(response => {
-        const data = response.ReturnObject;
 
-        sessionStorage.setItem('GameList_' + this.type, JSON.stringify(data));
-        let tempArray = [];
-        let chunk_size = 6;
-        for (let index = 0; index < data.length; index += chunk_size) {
-          let myChunk = data.slice(index, index + chunk_size);
-          tempArray.push(myChunk);
-        }
-        this.gameList = [].concat(tempArray);
-      });
+    banner().then(response => {
+      const data = response.ReturnObject;
+
+      sessionStorage.setItem('GameList_' + this.type, JSON.stringify(data));
+      let tempArray = [];
+      let chunk_size = 6;
+      for (let index = 0; index < data.length; index += chunk_size) {
+        let myChunk = data.slice(index, index + chunk_size);
+        tempArray.push(myChunk);
+      }
+      this.gameList = [].concat(tempArray);
+    });
   }
 };
 </script>

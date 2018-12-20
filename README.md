@@ -28,3 +28,16 @@ export default() => {
 
 - this.axios > Api
 - interceptors
+
+## BannerService.js
+
+
+
+## Reference
+
+- [Environment Variables and Modes](https://cli.vuejs.org/guide/mode-and-env.html)
+
+- [Using Axios to Consume APIs
+](https://vuejs.org/v2/cookbook/using-axios-to-consume-apis.html#Base-Example)
+
+- [Axios](https://github.com/axios/axios)
